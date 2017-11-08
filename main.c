@@ -16,7 +16,7 @@ void create_ht(struct bin*** hashtable, size_t size){
 }
 
 int hash_ht(size_t size, int key){
-    return floor(size * fmod(key * 0.61803398987, 1));
+    return abs(floor(size * fmod(key * 0.61803398987, 1)));
 }
 
 void insert_ht(struct bin*** hashtable, int key, int val, size_t size){
@@ -69,8 +69,8 @@ int main(int argc, char* argv[argc+1]){
     struct bin** hashtable = NULL;
     create_ht(&hashtable, size);
 
-    int nums[3] = {3, 4, 3};
-    int target = 7;
+    int nums[3] = {3, -1, -2};
+    int target = 2;
     for(int i = 0; i < 3; i++){
         insert_ht(&hashtable, nums[i], i, size);
     }
