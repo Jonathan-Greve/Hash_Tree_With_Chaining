@@ -9,10 +9,7 @@ struct bin{
 };
 
 void create_ht(struct bin*** hashtable, size_t size){
-    *hashtable = (struct bin**)malloc(size * sizeof(struct bin*));
-    for (int i = 0; i < size; i++){
-        (*hashtable)[i] = NULL;
-    }
+    *hashtable = (struct bin**)calloc(size, sizeof(struct bin**));
 }
 
 int hash_ht(size_t size, int key){
@@ -48,43 +45,45 @@ void insert_ht(struct bin*** hashtable, int key, int val, size_t size){
 }
 
 int search_ht(struct bin*** hashtable, int key, size_t size){
-    //MISSING: Search chained bins
     struct bin* tmp_item;
     struct bin* item = (*hashtable)[hash_ht(size, key)];
     if(item){
         while(item){
             tmp_item = item;
-            printf("val_in_chain: %d", tmp_item->val);
+            printf("val_in_chain: %d\n", tmp_item->val);
             item = item->successor;
-            puts("test");
         }
-        puts("found!");
         return tmp_item->val;
     }
-    return -2;
+    return 0;
 }
 
 int main(int argc, char* argv[argc+1]){
-    size_t size = 10;
+    size_t size = 100;
     struct bin** hashtable = NULL;
     create_ht(&hashtable, size);
 
-    int nums[3] = {3, -1, -2};
-    int target = 2;
-    for(int i = 0; i < 3; i++){
-        insert_ht(&hashtable, nums[i], i, size);
-    }
-    for(int i = 0; i < 3; i++){
-        printf("val: %d\n", search_ht(&hashtable, nums[i], size));
+    //Two sums problem on leetcode.com
+    int numsSize = 4;
+    int nums[4] = {0,4,3,0};
+    int target = 0;
+    for(int i = 0; i < numsSize; i+=2){
+        if(hashtable[hash_ht(size, nums[i])]){
+            printf("[%d, %d]\n", i, hashtable[hash_ht(size, nums[i])]->val);
+            break;
+        }
+        insert_ht(&hashtable, target - nums[i], i, size);
+        if(hashtable[hash_ht(size, nums[i+1])]){
+            printf("[%d, %d]\n", i+1, hashtable[hash_ht(size, nums[i+1])]->val);
+            break;
+        }
+        insert_ht(&hashtable, target - nums[i+1], i+1, size);
     }
 
-    for(int i = 0; i < 3; i++){
-        int remain_num = target - nums[i];
-        if(hashtable[hash_ht(size, remain_num)] && hashtable[hash_ht(size, remain_num)]->val != i){
-            printf("[%d, %d]\n", i, hashtable[hash_ht(size, remain_num)]->val);
-            break; //otherwise it will find all combinations
-        }
-    }
+    //Testing search
+    // for(int i = 0; i < numsSize; i++){
+    //     printf("val: %d\n", search_ht(&hashtable, nums[i], size));
+    // }
 
     puts("Done");
 }
